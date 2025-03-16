@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const fetch = global.fetch || require('node-fetch');
 const { chromium } = require('playwright');
-const pLimit = require('p-limit');
 
 // Helper: Wraps a promise so that it rejects if not settled within ms milliseconds.
 function withTimeout(promise, ms) {
@@ -16,6 +15,9 @@ function withTimeout(promise, ms) {
 
 (async () => {
   try {
+    // Dynamically import p-limit
+    const { default: pLimit } = await import('p-limit');
+
     // Fetch JSON data from the remote endpoint.
     const jsonUrl = 'https://raw.is-a.dev';
     const response = await fetch(jsonUrl);
