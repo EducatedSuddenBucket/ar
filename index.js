@@ -32,13 +32,13 @@ function withTimeout(promise, ms) {
     });
 
     // Use current date in "yyyy-mm-dd" format.
-    const currentDate = new Date().toISOString().slice(0, 10);
+    const currentDate = '1976-05-19';
 
     // Launch Playwright browser.
     const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
 
     // Limit concurrency to avoid overloading the system.
-    const limit = pLimit(10);
+    const limit = pLimit(20);
 
     // This will collect JSON data for each domain.
     const results = [];
