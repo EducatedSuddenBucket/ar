@@ -1,41 +1,39 @@
-name: Deploy to GitHub Pages
+name: Run and Deploy to GH Pages
 
 on:
   push:
     branches:
       - gh-pages
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: gh-pages
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
       - name: Install dependencies
         run: npm install playwright node-fetch
 
-      - name: Run archive script
+      - name: Run script
         run: node index.js
 
-      - name: Commit changes
+      - name: Commit and push changes
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Action"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          # Only commit if there are changes  
-          git diff-index --quiet HEAD || git commit -m "Update archive $(date)"
+          git commit -m "Automated update from workflow" || exit 0
           git push origin gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
