@@ -1,22 +1,22 @@
-name: Deploy Archive
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - gh-pages
 
 permissions:
-  contents: write  # Grants write permissions to the workflow
+  contents: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout gh-pages branch
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          ref: gh-pages
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -24,14 +24,18 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install playwright p-limit && npx playwright install
+        run: npm install playwright node-fetch
 
-      - name: Run Archive Script
+      - name: Run archive script
         run: node index.js
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./
+      - name: Commit changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          # Only commit if there are changes  
+          git diff-index --quiet HEAD || git commit -m "Update archive $(date)"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
