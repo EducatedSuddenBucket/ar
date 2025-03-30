@@ -1,0 +1,80 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+  <meta charset="UTF-8">  
+  <title>Archive Index</title>  
+  <style>  
+    body { font-family: Arial, sans-serif; background-color: #0F0C19; color: #fff; margin: 20px; }  
+    .header { text-align: center; margin-bottom: 20px; }  
+    input[type="text"] { width: 300px; padding: 10px; border: none; border-radius: 5px; margin-bottom: 20px; }  
+    .domain { margin-bottom: 20px; }  
+    .domain h2 { cursor: pointer; background: #4E3AA3; padding: 10px; border-radius: 5px; }  
+    .date-list { display: none; margin-left: 20px; }  
+    .date-item { margin-bottom: 10px; }  
+    img { max-width: 100%; border: 1px solid #ccc; }  
+  </style>  
+</head>  
+<body>  
+  <div class="header">  
+    <h1>Archive Index</h1>  
+    <input type="text" id="search" placeholder="Search domains..." onkeyup="filterDomains()" />  
+  </div>  
+  <div id="archive"></div>  
+  <script>  
+    async function loadData() {  
+      const response = await fetch('api/index.json');  
+      const data = await response.json();  
+      renderArchive(data);  
+    }  
+    function renderArchive(data) {  
+      const archiveDiv = document.getElementById('archive');  
+      archiveDiv.innerHTML = '';  
+      data.domains.forEach(domainData => {  
+        const domainDiv = document.createElement('div');  
+        domainDiv.className = 'domain';  
+        const header = document.createElement('h2');  
+        header.textContent = domainData.domain;  
+        header.onclick = () => {  
+          const list = domainDiv.querySelector('.date-list');  
+          list.style.display = list.style.display === 'none' ? 'block' : 'none';  
+        };  
+        domainDiv.appendChild(header);  
+        const dateList = document.createElement('div');  
+        dateList.className = 'date-list';  
+        domainData.dates.forEach(dateEntry => {  
+          const dateItem = document.createElement('div');  
+          dateItem.className = 'date-item';  
+          const dateHeader = document.createElement('h3');  
+          dateHeader.textContent = dateEntry.date;  
+          const imgEl = document.createElement('img');  
+          // Set the screenshot URL in a data attribute instead of src  
+          imgEl.setAttribute('data-src', dateEntry.screenshot);  
+          // Initially, do not load the image  
+          imgEl.style.display = 'none';  
+          dateHeader.onclick = () => {  
+            // On first click, assign the src if not set  
+            if (!imgEl.getAttribute('src')) {  
+              imgEl.src = imgEl.getAttribute('data-src');  
+            }  
+            imgEl.style.display = imgEl.style.display === 'none' ? 'block' : 'none';  
+          };  
+          dateItem.appendChild(dateHeader);  
+          dateItem.appendChild(imgEl);  
+          dateList.appendChild(dateItem);  
+        });  
+        domainDiv.appendChild(dateList);  
+        archiveDiv.appendChild(domainDiv);  
+      });  
+    }  
+    function filterDomains() {  
+      const query = document.getElementById('search').value.toLowerCase();  
+      const domains = document.querySelectorAll('.domain');  
+      domains.forEach(domainDiv => {  
+        const header = domainDiv.querySelector('h2');  
+        domainDiv.style.display = header.textContent.toLowerCase().includes(query) ? '' : 'none';  
+      });  
+    }  
+    loadData();  
+  </script>  
+</body>  
+</html>
