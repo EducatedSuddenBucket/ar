@@ -1,80 +1,40 @@
-<!DOCTYPE html>  
-<html>  
-<head>  
-  <meta charset="UTF-8">  
-  <title>Archive Index</title>  
-  <style>  
-    body { font-family: Arial, sans-serif; background-color: #0F0C19; color: #fff; margin: 20px; }  
-    .header { text-align: center; margin-bottom: 20px; }  
-    input[type="text"] { width: 300px; padding: 10px; border: none; border-radius: 5px; margin-bottom: 20px; }  
-    .domain { margin-bottom: 20px; }  
-    .domain h2 { cursor: pointer; background: #4E3AA3; padding: 10px; border-radius: 5px; }  
-    .date-list { display: none; margin-left: 20px; }  
-    .date-item { margin-bottom: 10px; }  
-    img { max-width: 100%; border: 1px solid #ccc; }  
-  </style>  
-</head>  
-<body>  
-  <div class="header">  
-    <h1>Archive Index</h1>  
-    <input type="text" id="search" placeholder="Search domains..." onkeyup="filterDomains()" />  
-  </div>  
-  <div id="archive"></div>  
-  <script>  
-    async function loadData() {  
-      const response = await fetch('api/index.json');  
-      const data = await response.json();  
-      renderArchive(data);  
-    }  
-    function renderArchive(data) {  
-      const archiveDiv = document.getElementById('archive');  
-      archiveDiv.innerHTML = '';  
-      data.domains.forEach(domainData => {  
-        const domainDiv = document.createElement('div');  
-        domainDiv.className = 'domain';  
-        const header = document.createElement('h2');  
-        header.textContent = domainData.domain;  
-        header.onclick = () => {  
-          const list = domainDiv.querySelector('.date-list');  
-          list.style.display = list.style.display === 'none' ? 'block' : 'none';  
-        };  
-        domainDiv.appendChild(header);  
-        const dateList = document.createElement('div');  
-        dateList.className = 'date-list';  
-        domainData.dates.forEach(dateEntry => {  
-          const dateItem = document.createElement('div');  
-          dateItem.className = 'date-item';  
-          const dateHeader = document.createElement('h3');  
-          dateHeader.textContent = dateEntry.date;  
-          const imgEl = document.createElement('img');  
-          // Set the screenshot URL in a data attribute instead of src  
-          imgEl.setAttribute('data-src', dateEntry.screenshot);  
-          // Initially, do not load the image  
-          imgEl.style.display = 'none';  
-          dateHeader.onclick = () => {  
-            // On first click, assign the src if not set  
-            if (!imgEl.getAttribute('src')) {  
-              imgEl.src = imgEl.getAttribute('data-src');  
-            }  
-            imgEl.style.display = imgEl.style.display === 'none' ? 'block' : 'none';  
-          };  
-          dateItem.appendChild(dateHeader);  
-          dateItem.appendChild(imgEl);  
-          dateList.appendChild(dateItem);  
-        });  
-        domainDiv.appendChild(dateList);  
-        archiveDiv.appendChild(domainDiv);  
-      });  
-    }  
-    function filterDomains() {  
-      const query = document.getElementById('search').value.toLowerCase();  
-      const domains = document.querySelectorAll('.domain');  
-      domains.forEach(domainDiv => {  
-        const header = domainDiv.querySelector('h2');  
-        domainDiv.style.display = header.textContent.toLowerCase().includes(query) ? '' : 'none';  
-      });  
-    }  
-    loadData();  
-  </script>  
-</body>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archive Index</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()" title="Close">✕</button>
+  <img id="lightbox-img" src="" alt="Screenshot enlarged">
+</div>
+<div class="wrap">
+  <div class="header">
+    <h1>Archive Index</h1>
+     <p>Snapshots of is-a.dev subdomains.</p>
+  </div>
+  <div class="search-wrap">
+    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search domains..." oninput="onSearch()">
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-value" id="stat-domains">—</div><div class="stat-label">Domains</div></div>
+    <div class="stat"><div class="stat-value" id="stat-snapshots">—</div><div class="stat-label">Snapshots</div></div>
+    <div class="stat"><div class="stat-value" id="stat-latest">—</div><div class="stat-label">Latest capture</div></div>
+  </div>
+  <div id="vscroll-outer">
+    <div id="vscroll-inner"></div>
+  </div>
+  <div id="empty-state" class="empty" style="display:none;">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <p>No domains match your search.</p>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
 </html>
