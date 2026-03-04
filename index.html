@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archive Index</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()" title="Close">✕</button>
+  <img id="lightbox-img" src="" alt="Screenshot enlarged">
+</div>
+<div class="wrap">
+  <div class="header">
+    <h1>Archive Index</h1>
+     <p>Snapshots of is-a.dev subdomains.</p>
+  </div>
+  <div class="search-wrap">
+    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search domains..." oninput="onSearch()">
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-value" id="stat-domains">—</div><div class="stat-label">Domains</div></div>
+    <div class="stat"><div class="stat-value" id="stat-snapshots">—</div><div class="stat-label">Snapshots</div></div>
+    <div class="stat"><div class="stat-value" id="stat-latest">—</div><div class="stat-label">Latest capture</div></div>
+  </div>
+  <div id="vscroll-outer">
+    <div id="vscroll-inner"></div>
+  </div>
+  <div id="empty-state" class="empty" style="display:none;">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <p>No domains match your search.</p>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
