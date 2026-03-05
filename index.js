@@ -55,7 +55,7 @@ function withTimeout(promise, ms) {
         try {
           await withTimeout(
             page.goto(targetUrl, { waitUntil: 'networkidle', timeout: 7000 }),
-            7000
+            10000
           );
         } catch (error) {
           navError = error;
