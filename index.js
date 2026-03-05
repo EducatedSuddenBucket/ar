@@ -16,7 +16,7 @@ function withTimeout(promise, ms) {
   try {
     const { default: pLimit } = await import('p-limit');
 
-    const jsonUrl = 'https://raw.githubusercontent.com/is-a-dev/raw-api/main/v2.json';
+    const jsonUrl = 'https://raw.is-a.dev/v2.json';
     const response = await fetch(jsonUrl);
     const records = await response.json();
 
