@@ -54,8 +54,7 @@ function withTimeout(promise, ms) {
       try {
         try {
           await withTimeout(
-            page.goto(targetUrl, { waitUntil: 'networkidle', timeout: 7000 }),
-            10000
+            page.goto(targetUrl, { waitUntil: 'load', timeout: 7500 }),
           );
         } catch (error) {
           navError = error;
@@ -77,7 +76,7 @@ function withTimeout(promise, ms) {
         try {
           await withTimeout(
             page.screenshot({ path: screenshotPath, fullPage: true }),
-            7000
+            7500
           );
           console.log(`Saved screenshot for ${domain} at ${screenshotPath}`);
           domainRecord.dates.push({
