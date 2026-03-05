@@ -31,7 +31,7 @@ function withTimeout(promise, ms) {
 
     const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
 
-    const limit = pLimit(10);
+    const limit = pLimit(25);
 
     const results = [];
 
